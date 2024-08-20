@@ -28,38 +28,70 @@
 
         private static HidApiDeviceType GetDeviceType(HidDeviceStream stream)
         {
+            // Santroller
             if (stream.VendorId == 0x1209 && stream.ProductId == 0x2882)
             {
-                if (stream.Revision == 0x0400)
+                // Santroller encodes the device type into the top byte of the revision
+                byte deviceType = (byte)(stream.Revision >> 8);
+
+                // Rock Band guitar mode
+                if (deviceType == 0x04)
                     return HidApiDeviceType.Santroller_RB;
-                if (stream.Revision == 0x0300)
+                // Guitar Hero guitar mode
+                if (deviceType == 0x03)
                     return HidApiDeviceType.Santroller_GH;
             }
 
+            // PS3 instruments
             if (stream.VendorId == 0x12BA)
             {
+                // Rock Band guitars
                 if (stream.ProductId == 0x0200)
                     return HidApiDeviceType.PS3_RB;
+                // Guitar Hero guitars
                 if (stream.ProductId == 0x0100)
                     return HidApiDeviceType.PS3_GH;
             }
 
-            if (stream.VendorId == 0x1BAD && (stream.ProductId == 0x0004 || stream.ProductId == 0x3010))
-                return HidApiDeviceType.Wii_RB;
+            // MadCatz (older VID)
+            if (stream.VendorId == 0x1BAD)
+            {
+                // Wii RB1 guitars
+                if (stream.ProductId == 0x0004)
+                    return HidApiDeviceType.Wii_RB;
+                // Wii RB2/3 guitars
+                if (stream.ProductId == 0x3010)
+                    return HidApiDeviceType.Wii_RB;
+            }
 
+            // MadCatz (newer VID)
+            if (stream.VendorId == 0x0738)
+            {
+                // PS4 RB4 Stratocasters
+                if (stream.ProductId == 0x8261)
+                    return HidApiDeviceType.PS4_RB_MadCatz;
+            }
+
+            // PDP
             if (stream.VendorId == 0x0E6F)
             {
-                if (stream.ProductId == 0x0173 || stream.ProductId == 0x024A)
+                // PS4 RB4 Jaguars
+                if (stream.ProductId == 0x0173)
                     return HidApiDeviceType.PS4_RB_PDP;
+                // PS4 Riffmaster guitars
+                if (stream.ProductId == 0x024A)
+                    return HidApiDeviceType.PS4_RB_PDP;
+                // PS5 Riffmaster guitars
                 if (stream.ProductId == 0x0249)
                     return HidApiDeviceType.PS5_RB_PDP;
             }
 
-            if (stream.VendorId == 0x0738 && stream.ProductId == 0x8261)
-                return HidApiDeviceType.PS4_RB_MadCatz;
-
-            if (stream.VendorId == 0x289B && stream.ProductId == 0x0080)
-                return HidApiDeviceType.Raphnet_GH;
+            // Raphnet
+            if (stream.VendorId == 0x289B)
+            {
+                if (stream.ProductId == 0x0080)
+                    return HidApiDeviceType.Raphnet_GH;
+            }
 
             return HidApiDeviceType.Unknown;
         }
