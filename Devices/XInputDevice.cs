@@ -16,12 +16,14 @@ namespace FestivalInstrumentMapper.Devices
         private readonly XInputCapabilities _capabilities;
         private readonly bool _exists;
 
-        public override bool Exists() {
+        public override bool Exists()
+        {
             if (_exists)
             {
                 // only report our existence if we're a guitar
                 // regular gamepads only show up here for the sake of ViGEmBus and x360ce
                 return _capabilities.SubType == XInputControllerSubType.Guitar ||
+                    _capabilities.SubType == XInputControllerSubType.GuitarBass ||
                     _capabilities.SubType == XInputControllerSubType.GuitarAlternate ||
                     _capabilities.SubType == XInputControllerSubType.Gamepad;
             }
@@ -39,6 +41,7 @@ namespace FestivalInstrumentMapper.Devices
             string device_name = _capabilities.SubType switch
             {
                 XInputControllerSubType.Guitar => "Xbox 360 Rock Band Guitar",
+                XInputControllerSubType.GuitarBass => "Xbox 360 Rock Band Bass",
                 XInputControllerSubType.GuitarAlternate => "Xbox 360 Guitar Hero Guitar",
                 XInputControllerSubType.Gamepad => "Xbox 360 Gamepad",
                 _ => $"Xbox 360 Unsupported",
@@ -64,7 +67,8 @@ namespace FestivalInstrumentMapper.Devices
             {
                 XInputControllerSubType.GuitarAlternate or
                 XInputControllerSubType.Gamepad => ToGip.XInput_GH,
-                XInputControllerSubType.Guitar => ToGip.XInput_RB,
+                XInputControllerSubType.Guitar or
+                XInputControllerSubType.GuitarBass => ToGip.XInput_RB,
                 _ => throw new Exception($"Unhandled XInput subtype {_capabilities.SubType}")
             };
         }
