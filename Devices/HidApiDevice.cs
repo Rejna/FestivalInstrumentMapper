@@ -53,6 +53,14 @@
                     return HidApiDeviceType.PS3_GH;
             }
 
+            // RedOctane
+            if (stream.VendorId == 0x1430)
+            {
+                // World Tour PC guitars
+                if (stream.ProductId == 0x474C)
+                    return HidApiDeviceType.PS3_GH;
+            }
+
             // MadCatz (older VID)
             if (stream.VendorId == 0x1BAD)
             {
